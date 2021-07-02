@@ -7,6 +7,7 @@
       <div class="search">
         <input type="text" class="form-control" placeholder="Search by title" :disabled="disabled" v-model="bookQuery.bookTitle" @keyup.enter="searchTitle"/>
       </div>
+      <div> {{ bookQuery.bookTitle }} </div>
       <div class="content">
         <v-select :options="categories" label="title" v-model="bookQuery.bookCategory" @input="categoryChosen"></v-select>
         <div v-for="result in bookQuery.results" :key="result.list_name" class="book">
@@ -47,21 +48,21 @@ export default {
     searchTitle() {
       let query = this.bookQuery.bookCategory.replace(/\s+/g, '-').toLowerCase();
       console.log(query); 
-      fetch(`https://api.nytimes.com/svc/books/v3/lists/${query}.json?api-key=wMrIxYjKdpTQq76wy7ngPAG1OD0VJy8j`)
+      fetch(`https://api.nytimes.com/svc/books/v3/lists/${query}.json?api-key=3HTG84FPJor0C9b72FFHwAFh1CI7baE6`)
       .then(response => response.json())      
       .then((data) => {
-        this.bookQuery.results = data.results.books
-        console.log(this.bookQuery.results[0].title)
+        this.bookQuery.results = data.results.books.filter(libro => libro.title.toLowerCase().includes(this.bookQuery.bookTitle.toLowerCase()))
+        console.log(this.bookQuery.title)
         }) //TODOS los libros de esa categoria los pone en el array
       
       .catch(err => console.log(err))
-      this.bookQuery.bookTitle =""
+      //this.bookQuery.bookTitle =""
     },
   },
 
   
   created() {
-  fetch('https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=wMrIxYjKdpTQq76wy7ngPAG1OD0VJy8j')
+  fetch('https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=3HTG84FPJor0C9b72FFHwAFh1CI7baE6')
     .then(response => response.json())
     .then((data) => 
       {for (let i = 0; i < 10; i++) {
