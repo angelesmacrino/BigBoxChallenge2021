@@ -1,7 +1,5 @@
 ## Bigbox's Frontend Challenge 2021
 
-Welcome to the Bigbox's Frontend Challenge 2021. Thank you for participating and good luck !
-
 ---
 
 ### Challenge
@@ -31,34 +29,3 @@ To complete the assignment, you must provide the following functions:
     * When the users clicks on a result, it should redirect them to a Google Search using 
       the title and author obtained in 4. __ie: <i>https://www.google.com/search?q=range+david+epstein__ </i>
 
-#### Notes:
-You can use the following API key: 
-<table>
-    <tr>
-        <td>
-            <b>api-key</b>
-        </td>
-        <td>
-            <i>wMrIxYjKdpTQq76wy7ngPAG1OD0VJy8j</i>
-        </td>
-    </tr>
-</table>
-or you can get your own by register a free account at <i>https://developer.nytimes.com/accounts/create</i>
-
----
-
-### Project setup
-#### Install dependencies
-```bash
-yarn install
-```
-
-#### Compiles and hot-reloads for development
-```bash
-yarn run serve
-```
-
-#### Lints and fixes files
-```bash
-yarn run lint
-```
