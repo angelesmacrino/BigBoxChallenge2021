@@ -7,13 +7,16 @@
       <div class="search">
         <input type="text" class="form-control" placeholder="Search by title" :disabled="disabled" v-model="bookQuery.bookTitle" @keyup.enter="searchTitle"/>
       </div>
-      <div> {{ bookQuery.bookTitle }} </div>
       <div class="content">
         <v-select :options="categories" label="title" v-model="bookQuery.bookCategory" @input="categoryChosen"></v-select>
-        <div v-for="result in bookQuery.results" :key="result.list_name" class="book">
-          <h5> {{result.title}} </h5>
-          <p> {{result.author}} </p>
-          <p> {{result.description}} </p>
+        <div id="bookGrid">
+          <div v-for="result in bookQuery.results" :key="result.list_name" class="book">
+            <a :href="`https://www.google.com/search?q=${result.title}+${result.author}`" target="_blank">
+              <h5 class="title"> {{result.title}} </h5>
+              <p class="author">by {{result.author}}</p>
+              <p class="description"> {{result.description}} </p>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -36,7 +39,6 @@ export default {
   },
   methods: {
     categoryChosen() {
-      console.log(`you have chosen ${this.bookQuery.bookCategory})`)
       if (this.bookQuery.bookCategory !== null) this.disabled = false; //PONER MAS BELLO
       else {
         this.disabled = true;
@@ -140,10 +142,37 @@ export default {
     width: 100%;
   }
 }
+#bookGrid {
+  display: grid;
+  margin: 10px 10px 10px 10px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  .book {
+    background: rgb(156,156,156);
+    background: linear-gradient(0deg, rgba(156,156,156,0.5) 0%, rgba(203,203,203,0.5) 34%, rgba(210,210,210,0.5) 55%, rgba(215,214,214,0.5) 67%, rgba(232,231,231,0.5) 100%);
+    border-radius: 10px;
+    padding: 10px 10px 10px 10px;
+    width: 200px;
+    max-height: 300px;
+    a{
+      text-decoration: none;
+      color: rgb(46, 46, 46);
+      .title {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom:1px
+      }
+      .author {
+        text-align: center;
+      }
 
-.book {
-  background: red;
-  max-width: fit-content;
+      .description {
+        text-align:bottom;
+      }
+    }
+  }
+
 }
+
 
 </style>
