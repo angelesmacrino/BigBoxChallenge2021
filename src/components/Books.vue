@@ -5,16 +5,17 @@
         <h4 class="title">NYTimes Books</h4>
       </div>
       <div class="search">
-        <input type="text" class="form-control" placeholder="Search by title" :disabled="disabled" v-model="bookQuery.bookTitle" @keyup.enter="searchTitle"/>
+        <input type="text" class="form-control" placeholder="Search by title" :disabled="disabled" v-model="bookQuery.title" @keyup.enter="searchTitle"/>
       </div>
       <div class="content">
-        <v-select :options="categories" label="title" v-model="bookQuery.bookCategory" @input="categoryChosen"></v-select>
+        <v-select :options="categories" label="list_name" v-model="bookQuery.bookCategory" @input="categoryChosen" placeholder="Choose a category" aria-placeholder="Choose a category"></v-select>
         <div id="bookGrid">
+          <p id="numberResults"></p>
           <div v-for="result in bookQuery.results" :key="result.list_name" class="book">
             <a :href="`https://www.google.com/search?q=${result.title}+${result.author}`" target="_blank">
-              <h5 class="title"> {{result.title}} </h5>
+              <h5 class="title">{{result.title}}</h5> 
               <p class="author">by {{result.author}}</p>
-              <p class="description"> {{result.description}} </p>
+              <p class="description">{{result.description}}</p>
             </a>
           </div>
         </div>
@@ -30,7 +31,7 @@ export default {
     return {
       bookQuery: {
         bookCategory: "",
-        bookTitle: "",
+        title: "",
         results: []
       },
       categories: [],
@@ -39,26 +40,25 @@ export default {
   },
   methods: {
     categoryChosen() {
-      if (this.bookQuery.bookCategory !== null) this.disabled = false; //PONER MAS BELLO
-      else {
-        this.disabled = true;
-        this.bookQuery.results.length = 0
+      this.bookQuery.results.length = 0;
+      if (this.bookQuery.bookCategory !== null && !!this.bookQuery.title) this.searchTitle();
+      this.disabled = this.bookQuery.bookCategory === null;
+      if (this.disabled) {
+        this.bookQuery.title = "";
+        document.getElementById("numberResults").innerHTML = ``;
 
-        } 
-      
+      } 
     },
     searchTitle() {
       let query = this.bookQuery.bookCategory.replace(/\s+/g, '-').toLowerCase();
-      console.log(query); 
       fetch(`https://api.nytimes.com/svc/books/v3/lists/${query}.json?api-key=3HTG84FPJor0C9b72FFHwAFh1CI7baE6`)
       .then(response => response.json())      
       .then((data) => {
-        this.bookQuery.results = data.results.books.filter(libro => libro.title.toLowerCase().includes(this.bookQuery.bookTitle.toLowerCase()))
-        console.log(this.bookQuery.title)
-        }) //TODOS los libros de esa categoria los pone en el array
+        this.bookQuery.results = data.results.books.filter(libro => libro.title.toLowerCase().includes(this.bookQuery.title.toLowerCase()));
+        document.getElementById("numberResults").textContent = `Showing ${this.bookQuery.results.length} matching elements.`;
+        }) 
       
-      .catch(err => console.log(err))
-      //this.bookQuery.bookTitle =""
+      .catch(err => alert(err))
     },
   },
 
@@ -67,11 +67,9 @@ export default {
   fetch('https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=3HTG84FPJor0C9b72FFHwAFh1CI7baE6')
     .then(response => response.json())
     .then((data) => 
-      {for (let i = 0; i < 10; i++) {
-        this.categories.push(data.results[i].list_name)  //MEJORAR PARA QUE USE SOLO SLICE
-      }
-    })
-    .catch(err => console.log(err))
+      this.categories = data.results.slice(0,10).map((category) => category.list_name)
+      )
+    .catch(err => alert(err))
   },  
 };
 </script>
@@ -98,7 +96,6 @@ export default {
       display: block;
       margin-bottom: 6px;
     }
-
     > span {
       color: rgba(#3b4242, 0.7);
       font-size: 12px;
@@ -106,29 +103,14 @@ export default {
   }
 }
 
-.btn {
-  color: #fff;
-  cursor: pointer;
-  background-color: #117a8b;
-  border: 1px solid transparent;
-  margin: 1px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  transition: all 0.1s ease-in;
-  &:hover {
-    background-color: #138496;
-    border-color: #117a8b;
-  }
-}
-
 .heading {
   margin-bottom: 12px;
-
   .title {
     font-size: 18px;
     font-weight: 600;
   }
 }
+
 .search {
   margin-bottom: 24px;
   .form-control {
@@ -142,36 +124,34 @@ export default {
     width: 100%;
   }
 }
+
 #bookGrid {
-  display: grid;
+  display: inline-block;
   margin: 10px 10px 10px 10px;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
+  #numberResults {
+    border-bottom: 2px solid #797d81;
+  }
   .book {
-    background: rgb(156,156,156);
-    background: linear-gradient(0deg, rgba(156,156,156,0.5) 0%, rgba(203,203,203,0.5) 34%, rgba(210,210,210,0.5) 55%, rgba(215,214,214,0.5) 67%, rgba(232,231,231,0.5) 100%);
-    border-radius: 10px;
-    padding: 10px 10px 10px 10px;
-    width: 200px;
-    max-height: 300px;
+    max-width: 826px;
+    border-bottom: 1px solid #ced4da;
+    margin: 10px 10px 10px 10px;
     a{
       text-decoration: none;
+      text-align: start;
       color: rgb(46, 46, 46);
       .title {
-        text-align: center;
         font-weight: bold;
-        margin-bottom:1px
+        margin-bottom:2px
       }
       .author {
-        text-align: center;
+        font-size: 0.8rem;
+        margin-bottom:1px;
       }
-
       .description {
         text-align:bottom;
       }
     }
   }
-
 }
 
 
