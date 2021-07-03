@@ -28,4 +28,4 @@ export default {
   z-index: 0;
 }
 
-</style>
+</style> 
