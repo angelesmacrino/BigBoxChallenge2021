@@ -1,5 +1,9 @@
-My submission to the Bigbox frontend challenge 2021
-
+My submission to the Bigbox frontend challenge 2021.
+  
+https://angelesmacrino.github.io/bigboxchallenge2021/  
+  
+Made with Vue.js, scss, and Vue Select (https://vue-select.org/)  
+  
 ## Bigbox's Frontend Challenge 2021
 
 ---
